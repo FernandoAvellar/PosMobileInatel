@@ -1,0 +1,318 @@
+package br.inatel.mobile.pos.dm102.trabalhofinal.app;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import br.inatel.mobile.pos.dm102.trabalhofinal.model.Atendimento;
+import br.inatel.mobile.pos.dm102.trabalhofinal.model.Cliente;
+import br.inatel.mobile.pos.dm102.trabalhofinal.model.PessoaFisica;
+import br.inatel.mobile.pos.dm102.trabalhofinal.model.PessoaJuridica;
+
+public class Runner {
+
+	private static ArrayList<PessoaFisica> clientesFisicos = new ArrayList<>();
+	private static ArrayList<PessoaJuridica> clientesJuridicos = new ArrayList<>();
+
+	public static void main(String[] args) {
+
+		exibeMenuInicial();
+		String entrada = processaEntrada();
+
+		while (entrada != "sair") {
+
+			switch (entrada) {
+			case "cadastrarNovoClienteFisico":
+				cadastrarNovoClienteFisico();
+				exibeMenuInicial();
+				entrada = processaEntrada();
+				break;
+
+			case "cadastrarNovoClienteJuridico":
+				cadastrarNovoClienteJuridico();
+				exibeMenuInicial();
+				entrada = processaEntrada();
+				break;
+
+			case "exibirTodosClientes":
+				exibirTodosClientes();
+				exibeMenuInicial();
+				entrada = processaEntrada();
+				break;
+
+			case "cadastrarAtendimento":
+				menuCadastrarAtendimento();
+				exibeMenuInicial();
+				entrada = processaEntrada();
+				break;
+
+			case "listarAtendimentos":
+				menuListarAtendimentos();
+				exibeMenuInicial();
+				entrada = processaEntrada();
+				break;
+
+			case "opcaoInvalida":
+				pulaLinha();
+				System.out.println("Opção digitada inválida!");
+				exibeMenuInicial();
+				entrada = processaEntrada();
+				break;
+			}
+		}
+		
+		System.exit(0);
+	}
+
+	private static void menuListarAtendimentos() {
+		exibeMenuDeAtendimento();
+		String opcaoDeEntrada = leituraDoTeclado();
+
+		switch (opcaoDeEntrada) {
+		case "f":
+			listarAtendimentosParaPessoaFisica();
+			break;
+		case "j":
+			listarAtendimentosParaPessoaJuridica();
+			break;
+
+		default:
+			System.out.println("Opção inválida!");
+			break;
+		}
+
+	}
+
+	private static void listarAtendimentosParaPessoaJuridica() {
+		pulaLinha();
+		System.out.println("Digite o cnpj da empresa que deseja listar os atendimentos:");
+		String cnpj = leituraDoTeclado();
+		PessoaJuridica pessoaASerAtendida = recuperaPessoaJuridicaParaAtendimento(cnpj);
+
+		if (pessoaASerAtendida != null) {
+			listarAtendimentos(pessoaASerAtendida);
+		} else {
+			pulaLinha();
+			System.out.println("CNPJ não encontrado!");
+		}
+	}
+
+	private static void listarAtendimentosParaPessoaFisica() {
+		pulaLinha();
+		System.out.println("Digite o cpf da pessoa que deseja listar os atendimentos:");
+		String cpf = leituraDoTeclado();
+		PessoaFisica pessoaASerAtendida = recuperaPessoaFisicaParaAtendimento(cpf);
+
+		if (pessoaASerAtendida != null) {
+			listarAtendimentos(pessoaASerAtendida);
+		} else {
+			pulaLinha();
+			System.out.println("CPF não encontrado!");
+		}
+	}
+
+	private static void listarAtendimentos(Cliente pessoaASerAtendida) {
+		pulaLinha();
+		System.out.println("Lista dos atendimentos para " + pessoaASerAtendida.getNome() + " :");
+		ArrayList<Atendimento> atendimentos = pessoaASerAtendida.getAtendimentos();
+		for (Atendimento atendimento : atendimentos) {
+			System.out.println(atendimento);
+		}
+	}
+
+	private static void menuCadastrarAtendimento() {
+		exibeMenuDeAtendimento();
+		String opcaoDeEntrada = leituraDoTeclado();
+
+		switch (opcaoDeEntrada) {
+		case "f":
+			cadastrarAtendimentoPessoaFisica();
+			break;
+		case "j":
+			cadastrarAtendimentoPessoaJuridica();
+			break;
+
+		default:
+			System.out.println("Opção inválida!");
+			break;
+		}
+
+	}
+
+	private static void cadastrarAtendimentoPessoaJuridica() {
+		pulaLinha();
+		System.out.println("Digite o cnpj da pessoa que será atendida:");
+		String cnpj = leituraDoTeclado();
+		PessoaJuridica pessoaASerAtendida = recuperaPessoaJuridicaParaAtendimento(cnpj);
+
+		if (pessoaASerAtendida != null) {
+			cadastraAtendimento(pessoaASerAtendida);
+		} else {
+			pulaLinha();
+			System.out.println("CNPJ não encontrado!");
+		}
+
+	}
+
+	private static void cadastrarAtendimentoPessoaFisica() {
+		pulaLinha();
+		System.out.println("Digite o cpf da pessoa que será atendida:");
+		String cpf = leituraDoTeclado();
+		PessoaFisica pessoaASerAtendida = recuperaPessoaFisicaParaAtendimento(cpf);
+
+		if (pessoaASerAtendida != null) {
+			cadastraAtendimento(pessoaASerAtendida);
+		} else {
+			pulaLinha();
+			System.out.println("CPF não encontrado!");
+		}
+	}
+
+	private static void cadastraAtendimento(Cliente pessoaASerAtendida) {
+		pulaLinha();
+		System.out.println("Digite a descrição do atendimento para " + pessoaASerAtendida.getNome() + " :");
+		String descricao = leituraDoTeclado();
+		pessoaASerAtendida.cadastrarAtendimento(descricao);
+	}
+
+	private static void pulaLinha() {
+		System.out.println();
+	}
+
+	private static PessoaFisica recuperaPessoaFisicaParaAtendimento(String cpf) {
+
+		for (PessoaFisica cliente : clientesFisicos) {
+			if (cpf.equals(cliente.getCpf())) {
+				return cliente;
+			}
+		}
+		return null;
+	}
+
+	private static PessoaJuridica recuperaPessoaJuridicaParaAtendimento(String cnpj) {
+
+		for (PessoaJuridica cliente : clientesJuridicos) {
+			if (cnpj.equals(cliente.getCnpj())) {
+				return cliente;
+			}
+		}
+		return null;
+	}
+
+	private static void exibeMenuDeAtendimento() {
+		pulaLinha();
+		System.out.println("******************************************************************");
+		System.out.println("***       Atendimento para pessoas fisicas ou jurídicas  ***");
+		System.out.println("***  Tecle (f) para pessoa fisica ou (j) para pessoa juridica  ***");
+		System.out.println("******************************************************************");
+		pulaLinha();
+	}
+
+	private static void exibirTodosClientes() {
+
+		boolean foiExibido = false;
+
+		if (!clientesFisicos.isEmpty()) {
+			pulaLinha();
+			System.out.println("Clientes Fisicos cadastrados no sistema: ");
+			for (Cliente cliente : clientesFisicos) {
+				System.out.println(cliente);
+			}
+			pulaLinha();
+			foiExibido = true;
+		}
+
+		if (!clientesJuridicos.isEmpty()) {
+			pulaLinha();
+			System.out.println("Clientes Juridicos cadastrados no sistema: ");
+			for (Cliente cliente : clientesJuridicos) {
+				System.out.println(cliente);
+			}
+			pulaLinha();
+			foiExibido = true;
+		}
+
+		if (!foiExibido) {
+			pulaLinha();
+			System.out.println("Não existe cliente cadastrado no sistema!");
+			pulaLinha();
+		}
+
+	}
+
+	private static void cadastrarNovoClienteJuridico() {
+
+		System.out.println("Digite o nome: ");
+		String nome = leituraDoTeclado();
+
+		System.out.println("Digite o cnpj: ");
+		String cnpj = leituraDoTeclado();
+
+		PessoaJuridica pessoaJuridica = new PessoaJuridica(nome, cnpj);
+
+		clientesJuridicos.add(pessoaJuridica);
+	}
+
+	private static void cadastrarNovoClienteFisico() {
+
+		System.out.println("Digite o nome: ");
+		String nome = leituraDoTeclado();
+
+		System.out.println("Digite o cpf: ");
+		String cpf = leituraDoTeclado();
+
+		PessoaFisica pessoaFisica = new PessoaFisica(nome, cpf);
+
+		clientesFisicos.add(pessoaFisica);
+	}
+
+	private static String leituraDoTeclado() {
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			return in.readLine();
+
+		} catch (IOException exception) {
+			System.out.println("Ocorreu algum erro durante a entrada dos dados!");
+			exception.printStackTrace();
+		}
+		return "erro";
+	}
+
+	private static String processaEntrada() {
+
+		String entrada = leituraDoTeclado();
+
+		switch (entrada) {
+		case "1":
+			return "cadastrarNovoClienteFisico";
+		case "2":
+			return "cadastrarNovoClienteJuridico";
+		case "3":
+			return "exibirTodosClientes";
+		case "4":
+			return "cadastrarAtendimento";
+		case "5":
+			return "listarAtendimentos";
+		case "6":
+			return "sair";
+		default:
+			return "opcaoInvalida";
+		}
+	}
+
+	private static void exibeMenuInicial() {
+		pulaLinha();
+		System.out.println("************************************************************");
+		System.out.println("***** APP para Cadastro de Relacionamento com Clientes *****");
+		System.out.println("***** Escolha abaixo a opção desejada e tecle <Enter>  ****");
+		System.out.println("************************************************************");
+		System.out.println("1 - Cadastrar novo cliente fisico");
+		System.out.println("2 - Cadastrar novo cliente juridico");
+		System.out.println("3 - Exibir todos os clientes cadastrados");
+		System.out.println("4 - Cadastrar um atendimento");
+		System.out.println("5 - Listar todos atendimentos");
+		System.out.println("6 - Sair do sistema");
+	}
+
+}
