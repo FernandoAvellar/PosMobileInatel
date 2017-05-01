@@ -12,8 +12,8 @@ import br.inatel.mobile.pos.dm102.trabalhofinal.model.PessoaJuridica;
 
 public class Runner {
 
-	private static ArrayList<PessoaFisica> clientesFisicos = new ArrayList<>();
-	private static ArrayList<PessoaJuridica> clientesJuridicos = new ArrayList<>();
+	private static ArrayList<Cliente> clientesFisicos = new ArrayList<>();
+	private static ArrayList<Cliente> clientesJuridicos = new ArrayList<>();
 
 	public static void main(String[] args) {
 
@@ -61,7 +61,7 @@ public class Runner {
 				break;
 			}
 		}
-		
+
 		System.exit(0);
 	}
 
@@ -88,7 +88,7 @@ public class Runner {
 		pulaLinha();
 		System.out.println("Digite o cnpj da empresa que deseja listar os atendimentos:");
 		String cnpj = leituraDoTeclado();
-		PessoaJuridica pessoaASerAtendida = recuperaPessoaJuridicaParaAtendimento(cnpj);
+		Cliente pessoaASerAtendida = recuperaPessoaJuridicaParaAtendimento(cnpj);
 
 		if (pessoaASerAtendida != null) {
 			listarAtendimentos(pessoaASerAtendida);
@@ -102,7 +102,7 @@ public class Runner {
 		pulaLinha();
 		System.out.println("Digite o cpf da pessoa que deseja listar os atendimentos:");
 		String cpf = leituraDoTeclado();
-		PessoaFisica pessoaASerAtendida = recuperaPessoaFisicaParaAtendimento(cpf);
+		Cliente pessoaASerAtendida = recuperaPessoaFisicaParaAtendimento(cpf);
 
 		if (pessoaASerAtendida != null) {
 			listarAtendimentos(pessoaASerAtendida);
@@ -112,12 +112,18 @@ public class Runner {
 		}
 	}
 
-	private static void listarAtendimentos(Cliente pessoaASerAtendida) {
+	private static void listarAtendimentos(Cliente clienteASerAtendido) {
 		pulaLinha();
-		System.out.println("Lista dos atendimentos para " + pessoaASerAtendida.getNome() + " :");
-		ArrayList<Atendimento> atendimentos = pessoaASerAtendida.getAtendimentos();
-		for (Atendimento atendimento : atendimentos) {
-			System.out.println(atendimento);
+		System.out.println("Lista dos atendimentos para " + clienteASerAtendido.getNome() + " :");
+		
+		ArrayList<Atendimento> atendimentos = clienteASerAtendido.getAtendimentos();
+		
+		if (atendimentos.isEmpty()) {
+			System.out.println("Esse cliente ainda não teve nenhum atendimento realizado!");
+		} else {
+			for (Atendimento atendimento : atendimentos) {
+				System.out.println(atendimento);
+			}
 		}
 	}
 
@@ -144,7 +150,7 @@ public class Runner {
 		pulaLinha();
 		System.out.println("Digite o cnpj da pessoa que será atendida:");
 		String cnpj = leituraDoTeclado();
-		PessoaJuridica pessoaASerAtendida = recuperaPessoaJuridicaParaAtendimento(cnpj);
+		Cliente pessoaASerAtendida = recuperaPessoaFisicaParaAtendimento(cnpj);
 
 		if (pessoaASerAtendida != null) {
 			cadastraAtendimento(pessoaASerAtendida);
@@ -159,7 +165,7 @@ public class Runner {
 		pulaLinha();
 		System.out.println("Digite o cpf da pessoa que será atendida:");
 		String cpf = leituraDoTeclado();
-		PessoaFisica pessoaASerAtendida = recuperaPessoaFisicaParaAtendimento(cpf);
+		Cliente pessoaASerAtendida = recuperaPessoaFisicaParaAtendimento(cpf);
 
 		if (pessoaASerAtendida != null) {
 			cadastraAtendimento(pessoaASerAtendida);
@@ -169,6 +175,10 @@ public class Runner {
 		}
 	}
 
+	private static void pulaLinha() {
+		System.out.println();
+	}
+
 	private static void cadastraAtendimento(Cliente pessoaASerAtendida) {
 		pulaLinha();
 		System.out.println("Digite a descrição do atendimento para " + pessoaASerAtendida.getNome() + " :");
@@ -176,24 +186,20 @@ public class Runner {
 		pessoaASerAtendida.cadastrarAtendimento(descricao);
 	}
 
-	private static void pulaLinha() {
-		System.out.println();
-	}
+	private static Cliente recuperaPessoaFisicaParaAtendimento(String cpf) {
 
-	private static PessoaFisica recuperaPessoaFisicaParaAtendimento(String cpf) {
-
-		for (PessoaFisica cliente : clientesFisicos) {
-			if (cpf.equals(cliente.getCpf())) {
+		for (Cliente cliente : clientesFisicos) {
+			if (cpf.equals(((PessoaFisica) cliente).getCpf())) {
 				return cliente;
 			}
 		}
 		return null;
 	}
 
-	private static PessoaJuridica recuperaPessoaJuridicaParaAtendimento(String cnpj) {
+	private static Cliente recuperaPessoaJuridicaParaAtendimento(String cnpj) {
 
-		for (PessoaJuridica cliente : clientesJuridicos) {
-			if (cnpj.equals(cliente.getCnpj())) {
+		for (Cliente cliente : clientesJuridicos) {
+			if (cnpj.equals(((PessoaJuridica) cliente).getCnpj())) {
 				return cliente;
 			}
 		}
@@ -203,7 +209,7 @@ public class Runner {
 	private static void exibeMenuDeAtendimento() {
 		pulaLinha();
 		System.out.println("******************************************************************");
-		System.out.println("***       Atendimento para pessoas fisicas ou jurídicas  ***");
+		System.out.println("***       Atendimento para pessoas fisicas ou jurídicas		   ***");
 		System.out.println("***  Tecle (f) para pessoa fisica ou (j) para pessoa juridica  ***");
 		System.out.println("******************************************************************");
 		pulaLinha();
@@ -249,7 +255,7 @@ public class Runner {
 		System.out.println("Digite o cnpj: ");
 		String cnpj = leituraDoTeclado();
 
-		PessoaJuridica pessoaJuridica = new PessoaJuridica(nome, cnpj);
+		Cliente pessoaJuridica = new PessoaJuridica(nome, cnpj);
 
 		clientesJuridicos.add(pessoaJuridica);
 	}
@@ -262,21 +268,26 @@ public class Runner {
 		System.out.println("Digite o cpf: ");
 		String cpf = leituraDoTeclado();
 
-		PessoaFisica pessoaFisica = new PessoaFisica(nome, cpf);
+		Cliente pessoaFisica = new PessoaFisica(nome, cpf);
 
 		clientesFisicos.add(pessoaFisica);
 	}
 
 	private static String leituraDoTeclado() {
+
+		BufferedReader entradaLida;
+		String resultadoDaLeitura = null;
+
 		try {
-			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-			return in.readLine();
+			entradaLida = new BufferedReader(new InputStreamReader(System.in));
+			resultadoDaLeitura = entradaLida.readLine();
 
 		} catch (IOException exception) {
 			System.out.println("Ocorreu algum erro durante a entrada dos dados!");
 			exception.printStackTrace();
 		}
-		return "erro";
+
+		return resultadoDaLeitura;
 	}
 
 	private static String processaEntrada() {
