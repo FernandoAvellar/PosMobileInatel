@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.pmw.tinylog.Logger;
+
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.Cliente;
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.ClienteFisico;
 
@@ -48,8 +50,7 @@ public class ClienteFisicoDAO {
 			statement.executeUpdate();
 
 		} catch (Exception ex) {
-			System.out.println("Não foi possível salvar o cliente fisico.");
-			ex.printStackTrace();
+			Logger.error(ex, "Não foi possível salvar o cliente fisico.");
 
 		} finally {
 			JDBCUtils.fecharRecursos(conexao, statement);

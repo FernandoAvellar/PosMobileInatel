@@ -14,13 +14,21 @@ public class Atendimento {
 		this.data = LocalDateTime.now();
 		this.descricao = descricao;
 	}
-@Override
-public String toString() {
-	DateTimeFormatter formatador = DateTimeFormatter
-								  .ofLocalizedDateTime(FormatStyle.SHORT)
-								  .withLocale(new Locale("pt", "br"));
-	
-	return "Atendimento realizado em: "+ data.format(formatador) + ", Descrição: " + descricao;
-}
-	
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public LocalDateTime getData() {
+		return data;
+	}
+
+	@Override
+	public String toString() {
+		DateTimeFormatter formatador = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+				.withLocale(new Locale("pt", "br"));
+
+		return "Atendimento realizado em: " + data.format(formatador) + ", Descrição: " + descricao;
+	}
+
 }

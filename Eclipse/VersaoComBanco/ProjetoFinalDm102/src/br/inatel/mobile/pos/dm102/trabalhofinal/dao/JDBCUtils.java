@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import org.pmw.tinylog.Logger;
+
 public class JDBCUtils {
 
 	private JDBCUtils() {
@@ -15,7 +17,7 @@ public class JDBCUtils {
 			statement.close();
 			resultado.close();
 		} catch (Exception ex) {
-			System.out.println("Falha ao fechar recursos do banco.");
+			Logger.warn(ex, "Falha ao fechar recursos do banco.");
 		}
 	}
 
@@ -24,8 +26,7 @@ public class JDBCUtils {
 			conexao.close();
 			statement.close();
 		} catch (Exception ex) {
-			System.out.println("Falha ao fechar recursos do banco.");
-			ex.printStackTrace();
+			Logger.warn(ex, "Falha ao fechar recursos do banco.");
 		}
 	}
 

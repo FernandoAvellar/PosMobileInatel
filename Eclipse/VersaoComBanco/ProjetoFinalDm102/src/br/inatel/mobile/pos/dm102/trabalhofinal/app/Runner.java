@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import org.pmw.tinylog.Logger;
+
 import br.inatel.mobile.pos.dm102.trabalhofinal.dao.ClienteFisicoDAO;
 import br.inatel.mobile.pos.dm102.trabalhofinal.dao.ClienteJuridicoDAO;
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.Atendimento;
@@ -14,6 +16,9 @@ import br.inatel.mobile.pos.dm102.trabalhofinal.model.ClienteJuridico;
 
 public class Runner {
 
+	private Runner() {
+	}
+
 	private static ArrayList<Cliente> clientesFisicos = new ArrayList<>();
 	private static ArrayList<Cliente> clientesJuridicos = new ArrayList<>();
 
@@ -22,7 +27,7 @@ public class Runner {
 		exibeMenuInicial();
 		String entrada = processaEntrada();
 
-		while (entrada != "sair") {
+		while (!"sair".equals(entrada)) {
 
 			switch (entrada) {
 			case "cadastrarNovoClienteFisico":
@@ -145,7 +150,6 @@ public class Runner {
 			System.out.println("Opção inválida!");
 			break;
 		}
-
 	}
 
 	private static void cadastrarAtendimentoPessoaJuridica() {
@@ -311,8 +315,8 @@ public class Runner {
 			resultadoDaLeitura = entradaLida.readLine();
 
 		} catch (IOException exception) {
-			System.out.println("Ocorreu algum erro durante a entrada dos dados!");
-			exception.printStackTrace();
+			Logger.error(exception, "Falha na leitura do teclado.");
+			resultadoDaLeitura = "falhaLeitura";
 		}
 
 		return resultadoDaLeitura;
