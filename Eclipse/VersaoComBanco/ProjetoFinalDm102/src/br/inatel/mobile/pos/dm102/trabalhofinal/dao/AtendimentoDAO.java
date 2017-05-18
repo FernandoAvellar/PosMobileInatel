@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.pmw.tinylog.Logger;
 
@@ -14,6 +15,8 @@ import br.inatel.mobile.pos.dm102.trabalhofinal.model.ClienteFisico;
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.ClienteJuridico;
 
 public class AtendimentoDAO {
+
+	private static final String MENSAGEM_FALHA_SALVAR_ATENDIMENTO = "Nao foi possivel salvar o atendimento.";
 
 	private AtendimentoDAO() {
 	}
@@ -35,7 +38,7 @@ public class AtendimentoDAO {
 			statement.close();
 
 		} catch (Exception ex) {
-			Logger.error(ex, "Não foi possível salvar o atendimento.");
+			Logger.error(ex, MENSAGEM_FALHA_SALVAR_ATENDIMENTO);
 
 		} finally {
 			JDBCUtils.fecharRecursos(conexao, statement);
@@ -62,7 +65,7 @@ public class AtendimentoDAO {
 			statement.close();
 
 		} catch (Exception ex) {
-			Logger.error(ex, "Não foi possível salvar o atendimento.");
+			Logger.error(ex, MENSAGEM_FALHA_SALVAR_ATENDIMENTO);
 
 		} finally {
 			JDBCUtils.fecharRecursos(conexao, statement);
@@ -88,7 +91,7 @@ public class AtendimentoDAO {
 			statement.close();
 
 		} catch (Exception ex) {
-			Logger.error(ex, "Não foi possível salvar o atendimento.");
+			Logger.error(ex, MENSAGEM_FALHA_SALVAR_ATENDIMENTO);
 
 		} finally {
 			JDBCUtils.fecharRecursos(conexao, statement);
@@ -115,7 +118,7 @@ public class AtendimentoDAO {
 			statement.close();
 
 		} catch (Exception ex) {
-			Logger.error(ex, "Não foi possível salvar o atendimento.");
+			Logger.error(ex, MENSAGEM_FALHA_SALVAR_ATENDIMENTO);
 
 		} finally {
 			JDBCUtils.fecharRecursos(conexao, statement);
@@ -124,7 +127,7 @@ public class AtendimentoDAO {
 		return cliente_id;
 	}
 
-	public static ArrayList<Atendimento> buscarTodosAtendimentosClienteFisico(ClienteFisico clienteFisico) {
+	public static List<Atendimento> buscarTodosAtendimentosClienteFisico(ClienteFisico clienteFisico) {
 		ArrayList<Atendimento> atendimentos = new ArrayList<>();
 		Connection conexao = Conexao.abrirConexao();
 		PreparedStatement statement = null;
@@ -141,14 +144,13 @@ public class AtendimentoDAO {
 
 			while (rs.next()) {
 				descricao = rs.getString("descricao");
-				//TODO: Fix line below
-				data =   (LocalDateTime) rs.getObject("data");
+				data =  ((Timestamp) rs.getObject("data")).toLocalDateTime();
 				Atendimento atendimento = new Atendimento(descricao, data);
 				atendimentos.add(atendimento);
 			}
 
 		} catch (Exception ex) {
-			Logger.error(ex, "Não foi possível montar a lista de atendimentos do cliente fisico.");
+			Logger.error(ex, "Nao foi possivel montar a lista de atendimentos do cliente fisico.");
 
 		} finally {
 			JDBCUtils.fecharRecursos(conexao, statement);
@@ -158,7 +160,7 @@ public class AtendimentoDAO {
 
 	}
 
-	public static ArrayList<Atendimento> buscarTodosAtendimentosClienteJuridico(ClienteJuridico clienteJuridico) {
+	public static List<Atendimento> buscarTodosAtendimentosClienteJuridico(ClienteJuridico clienteJuridico) {
 		ArrayList<Atendimento> atendimentos = new ArrayList<>();
 		Connection conexao = Conexao.abrirConexao();
 		PreparedStatement statement = null;
@@ -175,14 +177,13 @@ public class AtendimentoDAO {
 
 			while (rs.next()) {
 				descricao = rs.getString("descricao");
-				//TODO: Fix line below
-				data = (LocalDateTime) rs.getObject("data");
+				data =  ((Timestamp) rs.getObject("data")).toLocalDateTime();
 				Atendimento atendimento = new Atendimento(descricao, data);
 				atendimentos.add(atendimento);
 			}
 
 		} catch (Exception ex) {
-			Logger.error(ex, "Não foi possível montar a lista de atendimentos do cliente juridico.");
+			Logger.error(ex, "Nao foi possivel montar a lista de atendimentos do cliente juridico.");
 
 		} finally {
 			JDBCUtils.fecharRecursos(conexao, statement);

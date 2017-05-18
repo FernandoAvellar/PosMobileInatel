@@ -33,7 +33,7 @@ public class Atendimento {
 		DateTimeFormatter formatador = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 				.withLocale(new Locale("pt", "br"));
 
-		return "Atendimento realizado em: " + data.format(formatador) + ", Descrição: " + descricao;
+		return "Atendimento realizado em: " + data.format(formatador) + ", Descricao: " + descricao;
 	}
 
 }

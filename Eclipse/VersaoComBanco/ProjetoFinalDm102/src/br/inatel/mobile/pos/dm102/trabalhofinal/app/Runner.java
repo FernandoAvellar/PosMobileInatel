@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.pmw.tinylog.Logger;
 
@@ -107,7 +108,7 @@ public class Runner {
 		pulaLinha();
 		System.out.println("Lista dos atendimentos para " + clienteASerAtendido.getNome() + " :");
 
-		ArrayList<Atendimento> atendimentos = AtendimentoDAO.buscarTodosAtendimentosClienteFisico(clienteASerAtendido);
+		List<Atendimento> atendimentos = AtendimentoDAO.buscarTodosAtendimentosClienteFisico(clienteASerAtendido);
 
 		if (atendimentos.isEmpty()) {
 			System.out.println("Esse cliente ainda nao teve nenhum atendimento realizado!");
@@ -136,7 +137,7 @@ public class Runner {
 		pulaLinha();
 		System.out.println("Lista dos atendimentos para a empresa " + empresaASerAtendida.getRazaoSocial() + " :");
 
-		ArrayList<Atendimento> atendimentos = AtendimentoDAO
+		List<Atendimento> atendimentos = AtendimentoDAO
 				.buscarTodosAtendimentosClienteJuridico(empresaASerAtendida);
 
 		if (atendimentos.isEmpty()) {

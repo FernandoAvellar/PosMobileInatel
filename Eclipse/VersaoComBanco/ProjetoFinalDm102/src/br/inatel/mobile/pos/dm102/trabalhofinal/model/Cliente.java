@@ -26,7 +26,7 @@ public class Cliente {
 
 	@Override
 	public String toString() {
-		return "Nome: " + nome + " -- Endereço: " + endereco + " -- Telefone: " + telefone;
+		return "Nome: " + nome + " -- Endereco: " + endereco + " -- Telefone: " + telefone;
 	}
 
 }
