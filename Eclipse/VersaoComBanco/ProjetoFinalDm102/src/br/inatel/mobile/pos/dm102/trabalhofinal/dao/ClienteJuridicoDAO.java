@@ -3,6 +3,7 @@ package br.inatel.mobile.pos.dm102.trabalhofinal.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import org.pmw.tinylog.Logger;
 
@@ -50,11 +51,94 @@ public class ClienteJuridicoDAO {
 			statement.executeUpdate();
 
 		} catch (Exception ex) {
-			Logger.error(ex, "Não foi possível salvar o cliente juridico.");
+			Logger.error(ex, "Nao foi possivel salvar o cliente juridico.");
 
 		} finally {
 			JDBCUtils.fecharRecursos(conexao, statement);
 		}
+	}
+
+	public static ArrayList<Cliente> buscarTodosClientesJuridicos() {
+		ArrayList<Cliente> clientesJuridicosCadastrados = new ArrayList<>();
+		Connection conexao = Conexao.abrirConexao();
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+			String sql1 = "SELECT * FROM cliente_juridico";
+
+			statement = conexao.prepareStatement(sql1);
+			rs = statement.executeQuery();
+
+			while (rs.next()) {
+
+				String cnpj = rs.getString("cnpj");
+				String razaoSocial = rs.getString("razaoSocial");
+				String inscricaoEstadual = rs.getString("inscricaoEstadual");
+				int cliente_id = rs.getInt("cliente_id");
+
+				Cliente cliente = ClienteDAO.buscarClientePorId(cliente_id);
+				String nome = cliente.getNome();
+				String endereco = cliente.getEndereco();
+				String telefone = cliente.getTelefone();
+
+				ClienteJuridico clienteJuridico = new ClienteJuridico(nome, endereco, telefone, cnpj, razaoSocial,
+						inscricaoEstadual);
+				clientesJuridicosCadastrados.add(clienteJuridico);
+			}
+
+			statement.close();
+
+		} catch (Exception ex) {
+			Logger.error(ex, "Nao foi possivel buscar todos os cliente juridicos no banco.");
+
+		} finally {
+			JDBCUtils.fecharRecursos(conexao, statement);
+		}
+
+		return clientesJuridicosCadastrados;
+
+	}
+
+	public static ClienteJuridico buscarPorCnpj(String cnpjParaBusca) {
+		ClienteJuridico clienteJuridico = null;
+		Connection conexao = Conexao.abrirConexao();
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+			String sql = "SELECT * FROM cliente_juridico where cnpj = ?";
+
+			statement = conexao.prepareStatement(sql);
+			statement.setString(1, cnpjParaBusca);
+			rs = statement.executeQuery();
+
+			while (rs.next()) {
+
+				String cnpj = rs.getString("cnpj");
+				String razaoSocial = rs.getString("razaoSocial");
+				String inscricaoEstadual = rs.getString("inscricaoEstadual");
+				int cliente_id = rs.getInt("cliente_id");
+
+				Cliente cliente = ClienteDAO.buscarClientePorId(cliente_id);
+				String nome = cliente.getNome();
+				String endereco = cliente.getEndereco();
+				String telefone = cliente.getTelefone();
+
+				clienteJuridico = new ClienteJuridico(nome, endereco, telefone, cnpj, razaoSocial, inscricaoEstadual);
+			}
+
+			statement.close();
+
+		} catch (Exception ex) {
+			Logger.error(ex, "Nao foi possivel buscar todos os cliente juridicos no banco.");
+
+		} finally {
+			JDBCUtils.fecharRecursos(conexao, statement);
+		}
+
+		return clienteJuridico;
+
 	}
 
 }

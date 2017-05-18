@@ -28,7 +28,7 @@ public class ClienteJuridico extends Cliente {
 
 	@Override
 	public String toString() {
-		return super.toString() + " -- CNPJ: " + cnpj + " -- Raz„o Social: " + razaoSocial + " -- InscriÁ„o Estadual: "
+		return super.toString() + " -- CNPJ: " + cnpj + " -- Raz√£o Social: " + razaoSocial + " -- Inscri√ß√£o Estadual: "
 				+ inscricaoEstadual;
 	}
 

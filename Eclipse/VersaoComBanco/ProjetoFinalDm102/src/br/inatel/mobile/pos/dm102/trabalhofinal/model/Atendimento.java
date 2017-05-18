@@ -14,6 +14,11 @@ public class Atendimento {
 		this.data = LocalDateTime.now();
 		this.descricao = descricao;
 	}
+	
+	public Atendimento(String descricao, LocalDateTime data) {
+		this.descricao = descricao;
+		this.data = data;
+	}
 
 	public String getDescricao() {
 		return descricao;
@@ -28,7 +33,7 @@ public class Atendimento {
 		DateTimeFormatter formatador = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 				.withLocale(new Locale("pt", "br"));
 
-		return "Atendimento realizado em: " + data.format(formatador) + ", Descrição: " + descricao;
+		return "Atendimento realizado em: " + data.format(formatador) + ", DescriÃ§Ã£o: " + descricao;
 	}
 
 }

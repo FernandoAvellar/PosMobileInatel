@@ -5,7 +5,7 @@ public class ClienteFisico extends Cliente {
 	private String cpf;
 	private String identidade;
 	private String tipoDaIdentidade;
-
+	
 	public ClienteFisico(String nome, String endereco, String telefone, String cpf, String identidade,
 			String tipoDaIdentidade) {
 		super(nome, endereco, telefone);
