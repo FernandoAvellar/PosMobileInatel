@@ -4,141 +4,158 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.pmw.tinylog.Logger;
 
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.Cliente;
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.ClienteFisico;
 
-public class ClienteFisicoDAO {
+public class ClienteFisicoDAO
+{
 
-	private ClienteFisicoDAO() {
-	}
+    private ClienteFisicoDAO()
+    {
+    }
 
-	public static void salvar(Cliente clienteFisico) {
+    public static void salvar(Cliente clienteFisico)
+    {
 
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-		int cliente_id = 0;
+        Connection conexao = Conexao.abrirConexao();
+        PreparedStatement statement = null;
+        int cliente_id = 0;
 
-		try {
-			String sql1 = "INSERT INTO cliente(nome, endereco, telefone) VALUES(?, ?, ?)";
-			String sql2 = "SELECT MAX(id) id from cliente";
-			String sql3 = "INSERT INTO cliente_fisico(cpf, identidade, tipoDaIdentidade, cliente_id) VALUES(?, ?, ?, ?)";
+        try
+        {
+            String sql1 = "INSERT INTO cliente(nome, endereco, telefone) VALUES(?, ?, ?)";
+            String sql2 = "SELECT MAX(id) id from cliente";
+            String sql3 = "INSERT INTO cliente_fisico(cpf, identidade, tipoDaIdentidade, cliente_id) VALUES(?, ?, ?, ?)";
 
-			statement = conexao.prepareStatement(sql1);
+            statement = conexao.prepareStatement(sql1);
 
-			statement.setString(1, clienteFisico.getNome());
-			statement.setString(2, clienteFisico.getEndereco());
-			statement.setString(3, clienteFisico.getTelefone());
-			statement.executeUpdate();
-			statement.close();
+            statement.setString(1, clienteFisico.getNome());
+            statement.setString(2, clienteFisico.getEndereco());
+            statement.setString(3, clienteFisico.getTelefone());
+            statement.executeUpdate();
+            statement.close();
 
-			statement = conexao.prepareStatement(sql2);
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				cliente_id = rs.getInt("id");
-			}
+            statement = conexao.prepareStatement(sql2);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next())
+            {
+                cliente_id = rs.getInt("id");
+            }
 
-			statement.close();
+            statement.close();
 
-			statement = conexao.prepareStatement(sql3);
+            statement = conexao.prepareStatement(sql3);
 
-			statement.setString(1, ((ClienteFisico) clienteFisico).getCpf());
-			statement.setString(2, ((ClienteFisico) clienteFisico).getIdentidade());
-			statement.setString(3, ((ClienteFisico) clienteFisico).getTipoDaIdentidade());
-			statement.setInt(4, cliente_id);
-			statement.executeUpdate();
+            statement.setString(1, ((ClienteFisico) clienteFisico).getCpf());
+            statement.setString(2, ((ClienteFisico) clienteFisico).getIdentidade());
+            statement.setString(3, ((ClienteFisico) clienteFisico).getTipoDaIdentidade());
+            statement.setInt(4, cliente_id);
+            statement.executeUpdate();
 
-		} catch (Exception ex) {
-			Logger.error(ex, "Nao foi possivel salvar o cliente fisico.");
+        }
+        catch (Exception ex)
+        {
+            Logger.error(ex, "Nao foi possivel salvar o cliente fisico.");
 
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
-		}
-	}
+        }
+        finally
+        {
+            JDBCUtils.fecharRecursos(conexao, statement);
+        }
+    }
 
-	public static ArrayList<Cliente> buscarTodosClientesFisicos() {
-		ArrayList<Cliente> clientesFisicosCadastrados = new ArrayList<>();
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-		ResultSet rs = null;
+    public static List<Cliente> buscarTodosClientesFisicos()
+    {
+        ArrayList<Cliente> clientesFisicosCadastrados = new ArrayList<>();
+        Connection conexao = Conexao.abrirConexao();
+        PreparedStatement statement = null;
+        ResultSet rs = null;
 
-		try {
-			String sql1 = "SELECT * FROM cliente_fisico";
+        try
+        {
+            String sql = "SELECT cliente.id, nome, endereco, telefone, cpf, identidade, tipoDaIdentidade FROM"
+                    + " cliente_fisico JOIN cliente ON cliente_fisico.cliente_id = cliente.id";
 
-			statement = conexao.prepareStatement(sql1);
-			rs = statement.executeQuery();
+            statement = conexao.prepareStatement(sql);
+            rs = statement.executeQuery();
 
-			while (rs.next()) {
+            while (rs.next())
+            {
+                String nome = rs.getString("nome");
+                String endereco = rs.getString("endereco");
+                String telefone = rs.getString("telefone");
+                String cpf = rs.getString("cpf");
+                String identidade = rs.getString("identidade");
+                String tipoDaIdentidade = rs.getString("tipoDaIdentidade");
 
-				String cpf = rs.getString("cpf");
-				String identidade = rs.getString("identidade");
-				String tipoDaIdentidade = rs.getString("tipoDaIdentidade");
-				int cliente_id = rs.getInt("cliente_id");
+                ClienteFisico clienteFisico = new ClienteFisico(nome, endereco, telefone, cpf, identidade, tipoDaIdentidade);
 
-				Cliente cliente = ClienteDAO.buscarClientePorId(cliente_id);
-				String nome = cliente.getNome();
-				String endereco = cliente.getEndereco();
-				String telefone = cliente.getTelefone();
+                clientesFisicosCadastrados.add(clienteFisico);
+            }
 
-				ClienteFisico clienteFisico = new ClienteFisico(nome, endereco, telefone, cpf, identidade,
-						tipoDaIdentidade);
-				clientesFisicosCadastrados.add(clienteFisico);
-			}
+            statement.close();
 
-			statement.close();
+        }
+        catch (Exception ex)
+        {
+            Logger.error(ex, "Nao foi possivel buscar todos os cliente fisicos no banco.");
 
-		} catch (Exception ex) {
-			Logger.error(ex, "Nao foi possivel buscar todos os cliente fisicos no banco.");
+        }
+        finally
+        {
+            JDBCUtils.fecharRecursos(conexao, statement);
+        }
 
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
-		}
+        return clientesFisicosCadastrados;
 
-		return clientesFisicosCadastrados;
+    }
 
-	}
+    public static ClienteFisico buscarPorCpf(String cpfParaBusca)
+    {
+        ClienteFisico clienteFisico = null;
+        Connection conexao = Conexao.abrirConexao();
+        PreparedStatement statement = null;
+        ResultSet rs = null;
 
-	public static ClienteFisico buscarPorCpf(String cpfParaBusca) {
-		ClienteFisico clienteFisico = null;
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-		ResultSet rs = null;
+        try
+        {
+            String sql = "SELECT cliente.id, nome, endereco, telefone, cpf, identidade, tipoDaIdentidade FROM"
+                    + " cliente_fisico JOIN cliente ON cliente_fisico.cliente_id = cliente.id WHERE cpf = ?";
 
-		try {
-			String sql = "SELECT * FROM cliente_fisico where cpf = ?";
+            statement = conexao.prepareStatement(sql);
+            statement.setString(1, cpfParaBusca);
+            rs = statement.executeQuery();
 
-			statement = conexao.prepareStatement(sql);
-			statement.setString(1, cpfParaBusca);
-			rs = statement.executeQuery();
+            while (rs.next())
+            {
+                String nome = rs.getString("nome");
+                String endereco = rs.getString("endereco");
+                String telefone = rs.getString("telefone");
+                String cpf = rs.getString("cpf");
+                String identidade = rs.getString("identidade");
+                String tipoDaIdentidade = rs.getString("tipoDaIdentidade");
 
-			while (rs.next()) {
+                clienteFisico = new ClienteFisico(nome, endereco, telefone, cpf, identidade, tipoDaIdentidade);
+            }
 
-				String cpf = rs.getString("cpf");
-				String identidade = rs.getString("identidade");
-				String tipoDaIdentidade = rs.getString("tipoDaIdentidade");
-				int cliente_id = rs.getInt("cliente_id");
+            statement.close();
 
-				Cliente cliente = ClienteDAO.buscarClientePorId(cliente_id);
-				String nome = cliente.getNome();
-				String endereco = cliente.getEndereco();
-				String telefone = cliente.getTelefone();
+        }
+        catch (Exception ex)
+        {
+            Logger.error(ex, "Nao foi possivel buscar todos os cliente juridicos no banco.");
 
-				clienteFisico = new ClienteFisico(nome, endereco, telefone, cpf, identidade, tipoDaIdentidade);
-			}
+        }
+        finally
+        {
+            JDBCUtils.fecharRecursos(conexao, statement);
+        }
 
-			statement.close();
-
-		} catch (Exception ex) {
-			Logger.error(ex, "Nao foi possivel buscar todos os cliente juridicos no banco.");
-
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
-		}
-
-		return clienteFisico;
-
-	}
+        return clienteFisico;
+    }
 
 }
