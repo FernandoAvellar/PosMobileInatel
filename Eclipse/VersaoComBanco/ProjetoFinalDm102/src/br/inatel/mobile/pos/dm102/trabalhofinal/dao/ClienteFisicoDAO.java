@@ -37,9 +37,8 @@ public class ClienteFisicoDAO {
 
 			statement = conexao.prepareStatement(sql2);
 			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				cliente_id = rs.getInt("id");
-			}
+			rs.next();
+			cliente_id = rs.getInt("id");
 
 			statement.close();
 

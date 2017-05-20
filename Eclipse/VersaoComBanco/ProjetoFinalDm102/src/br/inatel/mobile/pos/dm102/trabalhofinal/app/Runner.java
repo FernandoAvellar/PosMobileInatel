@@ -420,7 +420,7 @@ public class Runner
         System.out.println("************************************************************");
         System.out.println("1 - Cadastrar novo cliente fisico");
         System.out.println("2 - Cadastrar novo cliente juridico");
-        System.out.println("3 - Exibir todos os clientes cadastrados");
+        System.out.println("3 - Exibir os clientes cadastrados");
         System.out.println("4 - Cadastrar um atendimento");
         System.out.println("5 - Listar todos atendimentos");
         System.out.println("6 - Sair do sistema");
