@@ -1,5 +1,7 @@
 package br.inatel.mobile.pos.dm102.trabalhofinal.model;
 
+import br.inatel.mobile.pos.dm102.trabalhofinal.dao.ClienteFisicoDAO;
+
 public class ClienteFisico extends Cliente {
 
 	private String cpf;
@@ -25,10 +27,14 @@ public class ClienteFisico extends Cliente {
 	public String getTipoDaIdentidade() {
 		return tipoDaIdentidade;
 	}
+	
+	public int getNumeroDeAtendimentos() {
+		return ClienteFisicoDAO.contarNumeroDeAtendimentos(this.cpf);
+	}
 
 	@Override
 	public String toString() {
-		return super.toString() + " -- CPF: " + cpf + " -- Identidade: " + identidade + " -- Tipo da Identidade: " + tipoDaIdentidade;
+		return super.toString() + " -- CPF: " + cpf + " -- Identidade: " + identidade + " -- Tipo da Identidade: " + tipoDaIdentidade + " -- Numero de Atendimentos: " + getNumeroDeAtendimentos();
 	}
 
 }

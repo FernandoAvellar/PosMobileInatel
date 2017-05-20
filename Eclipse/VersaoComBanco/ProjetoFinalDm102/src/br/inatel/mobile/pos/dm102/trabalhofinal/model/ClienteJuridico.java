@@ -1,5 +1,7 @@
 package br.inatel.mobile.pos.dm102.trabalhofinal.model;
 
+import br.inatel.mobile.pos.dm102.trabalhofinal.dao.ClienteJuridicoDAO;
+
 public class ClienteJuridico extends Cliente {
 
 	private String cnpj;
@@ -26,10 +28,14 @@ public class ClienteJuridico extends Cliente {
 		return inscricaoEstadual;
 	}
 
+	public int getNumeroDeAtendimentos() {
+		return ClienteJuridicoDAO.contarNumeroDeAtendimentos(this.cnpj);
+	}
+
 	@Override
 	public String toString() {
 		return super.toString() + " -- CNPJ: " + cnpj + " -- Razao Social: " + razaoSocial + " -- Inscricao Estadual: "
-				+ inscricaoEstadual;
+				+ inscricaoEstadual + " -- Numero de Atendimentos: " + getNumeroDeAtendimentos();
 	}
 
 }

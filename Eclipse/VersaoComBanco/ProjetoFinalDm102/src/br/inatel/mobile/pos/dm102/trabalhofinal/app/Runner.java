@@ -258,7 +258,7 @@ public class Runner
     {
         pulaLinha();
         System.out.println("******************************************************************");
-        System.out.println("***       Atendimento para pessoas fisicas ou juridicas		   ***");
+        System.out.println("***       Atendimento para pessoas fisicas ou juridicas        ***");
         System.out.println("***  Tecle (f) para pessoa fisica ou (j) para pessoa juridica  ***");
         System.out.println("******************************************************************");
         pulaLinha();
@@ -416,7 +416,7 @@ public class Runner
         pulaLinha();
         System.out.println("************************************************************");
         System.out.println("***** APP para Cadastro de Relacionamento com Clientes *****");
-        System.out.println("***** Escolha abaixo a opcao desejada e tecle <Enter>  ****");
+        System.out.println("***** Escolha abaixo a opcao desejada e tecle <Enter>  *****");
         System.out.println("************************************************************");
         System.out.println("1 - Cadastrar novo cliente fisico");
         System.out.println("2 - Cadastrar novo cliente juridico");
