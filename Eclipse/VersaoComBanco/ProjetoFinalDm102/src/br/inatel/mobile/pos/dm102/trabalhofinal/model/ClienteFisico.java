@@ -29,7 +29,7 @@ public class ClienteFisico extends Cliente {
 	}
 	
 	public int getNumeroDeAtendimentos() {
-		return ClienteDAO.contarNumeroDeAtendimentos(this.cpf);
+		return ClienteDAO.contarNumeroDeAtendimentosPorCpf(this.cpf);
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import org.pmw.tinylog.Logger;
 
 import br.inatel.mobile.pos.dm102.trabalhofinal.dao.AtendimentoDAO;
 import br.inatel.mobile.pos.dm102.trabalhofinal.dao.ClienteDAO;
-import br.inatel.mobile.pos.dm102.trabalhofinal.dao.ClienteJuridicoDAO;
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.Atendimento;
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.Cliente;
 import br.inatel.mobile.pos.dm102.trabalhofinal.model.ClienteFisico;
@@ -69,50 +68,25 @@ public class Runner {
 	}
 
 	private static void cadastrarNovoClienteFisico() {
-		System.out.println("Digite o nome: ");
-		String nome = leituraDoTeclado();
 
-		System.out.println("Digite o endereco: ");
-		String endereco = leituraDoTeclado();
-
-		System.out.println("Digite o telefone: ");
-		String telefone = leituraDoTeclado();
-
-		System.out.println("Digite o cpf: ");
-		String cpf = leituraDoTeclado();
-
-		System.out.println("Digite o identidade: ");
-		String identidade = leituraDoTeclado();
-
-		System.out.println("Digite o tipo da identidade: ");
-		String tipoDaIdentidade = leituraDoTeclado();
-
+		String nome = requisicaoDeEntradaDeDados("nome");
+		String endereco = requisicaoDeEntradaDeDados("endereco");
+		String telefone = requisicaoDeEntradaDeDados("telefone");
+		String cpf = requisicaoDeEntradaDeDados("cpf");
+		String identidade = requisicaoDeEntradaDeDados("identidade");
+		String tipoDaIdentidade = requisicaoDeEntradaDeDados("tipo da identidade");
 		Cliente clienteFisico = new ClienteFisico(nome, endereco, telefone, cpf, identidade, tipoDaIdentidade);
-
 		ClienteDAO.salvar(clienteFisico);
 	}
 
 	private static void cadastrarNovoClienteJuridico() {
-		System.out.println("Digite o nome: ");
-		String nome = leituraDoTeclado();
-
-		System.out.println("Digite o endereco: ");
-		String endereco = leituraDoTeclado();
-
-		System.out.println("Digite o telefone: ");
-		String telefone = leituraDoTeclado();
-
-		System.out.println("Digite o cnpj: ");
-		String cnpj = leituraDoTeclado();
-
-		System.out.println("Digite a razao social: ");
-		String razaoSocial = leituraDoTeclado();
-
-		System.out.println("Digite a inscricao estadual: ");
-		String inscricaoEstadual = leituraDoTeclado();
-
+		String nome = requisicaoDeEntradaDeDados("nome");
+		String endereco = requisicaoDeEntradaDeDados("endereco");
+		String telefone = requisicaoDeEntradaDeDados("telefone");
+		String cnpj = requisicaoDeEntradaDeDados("cnpj");
+		String razaoSocial = requisicaoDeEntradaDeDados("razão social");
+		String inscricaoEstadual = requisicaoDeEntradaDeDados("inscricao estadual");
 		Cliente clienteJuridico = new ClienteJuridico(nome, endereco, telefone, cnpj, razaoSocial, inscricaoEstadual);
-
 		ClienteDAO.salvar(clienteJuridico);
 	}
 
@@ -157,12 +131,12 @@ public class Runner {
 		while (!"x".equals(opcaoDeEntrada)) {
 			switch (opcaoDeEntrada) {
 			case "f":
-				cadastrarAtendimentoPessoaFisica();
+				cadastrarAtendimentoClienteFisico();
 				exibeMenuDeCadastroDeAtendimento();
 				opcaoDeEntrada = leituraDoTeclado();
 				break;
 			case "j":
-				cadastrarAtendimentoPessoaJuridica();
+				cadastrarAtendimentoClienteJuridico();
 				exibeMenuDeCadastroDeAtendimento();
 				opcaoDeEntrada = leituraDoTeclado();
 				break;
@@ -178,7 +152,7 @@ public class Runner {
 		}
 	}
 
-	private static void cadastrarAtendimentoPessoaFisica() {
+	private static void cadastrarAtendimentoClienteFisico() {
 		pulaLinha();
 		System.out.println("Digite o cpf da pessoa que sera atendida:");
 		String cpf = leituraDoTeclado();
@@ -190,14 +164,13 @@ public class Runner {
 			pulaLinha();
 			System.err.println("CPF nao encontrado!");
 		}
-
 	}
 
-	private static void cadastrarAtendimentoPessoaJuridica() {
+	private static void cadastrarAtendimentoClienteJuridico() {
 		pulaLinha();
 		System.out.println("Digite o cnpj da empresa que sera atendida:");
 		String cnpj = leituraDoTeclado();
-		ClienteJuridico empresaASerAtendida = ClienteJuridicoDAO.buscarPorCnpj(cnpj);
+		ClienteJuridico empresaASerAtendida = ClienteDAO.buscarPorCnpj(cnpj);
 
 		if (empresaASerAtendida != null) {
 			gerarESalvarAtendimentoClienteJuridico(empresaASerAtendida);
@@ -205,7 +178,6 @@ public class Runner {
 			pulaLinha();
 			System.err.println("CNPJ nao encontrado!");
 		}
-
 	}
 
 	private static void gerarESalvarAtendimentoClienteFisico(ClienteFisico pessoaASerAtendida) {
@@ -271,7 +243,7 @@ public class Runner {
 		pulaLinha();
 		System.out.println("Digite o cnpj da empresa que deseja listar os atendimentos:");
 		String cnpj = leituraDoTeclado();
-		ClienteJuridico empresaASerAtendida = ClienteJuridicoDAO.buscarPorCnpj(cnpj);
+		ClienteJuridico empresaASerAtendida = ClienteDAO.buscarPorCnpj(cnpj);
 
 		if (empresaASerAtendida != null) {
 			imprimeTodosAtendimentosDeUmClienteJuridico(empresaASerAtendida);
@@ -360,7 +332,7 @@ public class Runner {
 		System.out.println("******************************************************************");
 		pulaLinha();
 	}
-	
+
 	private static void exibeMenuDeListagemDeAtendimento() {
 		pulaLinha();
 		System.out.println("******************************************************************");
@@ -369,6 +341,16 @@ public class Runner {
 		System.out.println("***        ou (x) para voltar ao menu inicial.                 ***");
 		System.out.println("******************************************************************");
 		pulaLinha();
+	}
+
+	private static String requisicaoDeEntradaDeDados(String nomeDoDadoASolicitar) {
+		String entrada = null;
+
+		while (entrada == null || "".equals(entrada)) {
+			System.out.print("Digite o " + nomeDoDadoASolicitar + ":");
+			entrada = leituraDoTeclado();
+		}
+		return entrada;
 	}
 
 	private static String leituraDoTeclado() {

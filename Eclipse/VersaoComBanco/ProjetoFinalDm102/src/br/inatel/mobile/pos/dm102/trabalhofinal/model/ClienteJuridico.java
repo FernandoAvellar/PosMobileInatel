@@ -1,6 +1,6 @@
 package br.inatel.mobile.pos.dm102.trabalhofinal.model;
 
-import br.inatel.mobile.pos.dm102.trabalhofinal.dao.ClienteJuridicoDAO;
+import br.inatel.mobile.pos.dm102.trabalhofinal.dao.ClienteDAO;
 
 public class ClienteJuridico extends Cliente {
 
@@ -29,7 +29,7 @@ public class ClienteJuridico extends Cliente {
 	}
 
 	public int getNumeroDeAtendimentos() {
-		return ClienteJuridicoDAO.contarNumeroDeAtendimentos(this.cnpj);
+		return ClienteDAO.contarNumeroDeAtendimentosPorCnpj(this.cnpj);
 	}
 
 	@Override
