@@ -16,181 +16,127 @@ import br.inatel.mobile.pos.dm102.trabalhofinal.model.ClienteJuridico;
 
 public class AtendimentoDAO {
 
-	private static final String MENSAGEM_FALHA_SALVAR_ATENDIMENTO = "Nao foi possivel salvar o atendimento.";
+	private static final String MENSAGEM_DE_FALHA_AO_TENTAR_SALVAR_UM_ATENDIMENTO = "Nao foi possivel salvar o atendimento.";
 
 	private AtendimentoDAO() {
 	}
 
 	public static void salvarAtendimentoClienteFisico(ClienteFisico clienteAtendido, Atendimento atendimento) {
+		String sql = "INSERT INTO atendimento(descricao, data, cliente_id) VALUES(?, ?, ?)";
 
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-
-		try {
-			String sql1 = "INSERT INTO atendimento(descricao, data, cliente_id) VALUES(?, ?, ?)";
-
-			statement = conexao.prepareStatement(sql1);
-
+		try (Connection conexao = Conexao.abrirConexao(); PreparedStatement statement = conexao.prepareStatement(sql)) 
+		{
 			statement.setString(1, atendimento.getDescricao());
 			statement.setObject(2, Timestamp.valueOf(atendimento.getData()));
 			statement.setInt(3, buscarIdDoClienteFisicoNaTabelaCliente(clienteAtendido));
 			statement.executeUpdate();
-			statement.close();
-
 		} catch (Exception ex) {
-			Logger.error(ex, MENSAGEM_FALHA_SALVAR_ATENDIMENTO);
-
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
+			Logger.error(ex, MENSAGEM_DE_FALHA_AO_TENTAR_SALVAR_UM_ATENDIMENTO);
 		}
 	}
 
 	public static int buscarIdDoClienteFisicoNaTabelaCliente(ClienteFisico clienteFisico) {
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-		ResultSet rs = null;
 		int cliente_id = -1;
+		String sql = "SELECT cliente_id FROM cliente_fisico WHERE cpf = ?";
 
-		try {
-
-			String sql1 = "SELECT cliente_id FROM cliente_fisico WHERE cpf = ?";
-
-			statement = conexao.prepareStatement(sql1);
-
+		try (Connection conexao = Conexao.abrirConexao(); PreparedStatement statement = conexao.prepareStatement(sql))
+		{
 			statement.setString(1, clienteFisico.getCpf());
-			rs = statement.executeQuery();
-			while (rs.next()) {
+			
+			try (ResultSet rs = statement.executeQuery()) {
+				rs.next();
 				cliente_id = rs.getInt("cliente_id");
 			}
-			statement.close();
-
 		} catch (Exception ex) {
-			Logger.error(ex, MENSAGEM_FALHA_SALVAR_ATENDIMENTO);
-
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
-		}
+			Logger.error(ex, MENSAGEM_DE_FALHA_AO_TENTAR_SALVAR_UM_ATENDIMENTO);
+		} 
 
 		return cliente_id;
 	}
 
 	public static void salvarAtendimentoClienteJuridico(ClienteJuridico clienteAtendido, Atendimento atendimento) {
-
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-
-		try {
-			String sql1 = "INSERT INTO atendimento(descricao, data, cliente_id) VALUES(?, ?, ?)";
-
-			statement = conexao.prepareStatement(sql1);
-
+		String sql = "INSERT INTO atendimento(descricao, data, cliente_id) VALUES(?, ?, ?)";
+		
+		try (Connection conexao = Conexao.abrirConexao(); PreparedStatement statement = conexao.prepareStatement(sql))
+		{
 			statement.setString(1, atendimento.getDescricao());
 			statement.setObject(2, Timestamp.valueOf(atendimento.getData()));
 			statement.setInt(3, buscarIdDoClienteJuridicoNaTabelaCliente(clienteAtendido));
 			statement.executeUpdate();
-			statement.close();
-
 		} catch (Exception ex) {
-			Logger.error(ex, MENSAGEM_FALHA_SALVAR_ATENDIMENTO);
-
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
-		}
+			Logger.error(ex, MENSAGEM_DE_FALHA_AO_TENTAR_SALVAR_UM_ATENDIMENTO);
+		} 
 	}
 
 	public static int buscarIdDoClienteJuridicoNaTabelaCliente(ClienteJuridico clienteJuridico) {
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-		ResultSet rs = null;
 		int cliente_id = -1;
+		String sql = "SELECT cliente_id FROM cliente_juridico WHERE cnpj = ?";
 
-		try {
-
-			String sql1 = "SELECT cliente_id FROM cliente_juridico WHERE cnpj = ?";
-
-			statement = conexao.prepareStatement(sql1);
-
+		try (Connection conexao = Conexao.abrirConexao(); PreparedStatement statement = conexao.prepareStatement(sql))
+		{
 			statement.setString(1, clienteJuridico.getCnpj());
-			rs = statement.executeQuery();
-			while (rs.next()) {
+			
+			try (ResultSet rs = statement.executeQuery()) {
+				rs.next();
 				cliente_id = rs.getInt("cliente_id");
 			}
-			statement.close();
-
 		} catch (Exception ex) {
-			Logger.error(ex, MENSAGEM_FALHA_SALVAR_ATENDIMENTO);
-
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
-		}
+			Logger.error(ex, MENSAGEM_DE_FALHA_AO_TENTAR_SALVAR_UM_ATENDIMENTO);
+		} 
 
 		return cliente_id;
 	}
 
 	public static List<Atendimento> buscarTodosAtendimentosClienteFisico(ClienteFisico clienteFisico) {
 		ArrayList<Atendimento> atendimentos = new ArrayList<>();
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-		ResultSet rs = null;
+		String sql = "SELECT * FROM atendimento WHERE cliente_id = ?";
 		LocalDateTime data;
 		String descricao;
 
-		try {
-			String sql = "SELECT * FROM atendimento WHERE cliente_id = ?";
-
-			statement = conexao.prepareStatement(sql);
+		try (Connection conexao = Conexao.abrirConexao(); PreparedStatement statement = conexao.prepareStatement(sql))
+		{
 			statement.setInt(1, buscarIdDoClienteFisicoNaTabelaCliente(clienteFisico));
-			rs = statement.executeQuery();
-
-			while (rs.next()) {
-				descricao = rs.getString("descricao");
-				data =  ((Timestamp) rs.getObject("data")).toLocalDateTime();
-				Atendimento atendimento = new Atendimento(descricao, data);
-				atendimentos.add(atendimento);
+			
+			try (ResultSet rs = statement.executeQuery())
+			{
+				while (rs.next()) {
+					descricao = rs.getString("descricao");
+					data = ((Timestamp) rs.getObject("data")).toLocalDateTime();
+					Atendimento atendimento = new Atendimento(descricao, data);
+					atendimentos.add(atendimento);
+				}
 			}
 
 		} catch (Exception ex) {
 			Logger.error(ex, "Nao foi possivel montar a lista de atendimentos do cliente fisico.");
-
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
-		}
+		} 
 
 		return atendimentos;
-
 	}
 
 	public static List<Atendimento> buscarTodosAtendimentosClienteJuridico(ClienteJuridico clienteJuridico) {
 		ArrayList<Atendimento> atendimentos = new ArrayList<>();
-		Connection conexao = Conexao.abrirConexao();
-		PreparedStatement statement = null;
-		ResultSet rs = null;
+		String sql = "SELECT * FROM atendimento WHERE cliente_id = ?";
 		LocalDateTime data;
 		String descricao;
 
-		try {
-			String sql = "SELECT * FROM atendimento WHERE cliente_id = ?";
-
-			statement = conexao.prepareStatement(sql);
+		try (Connection conexao = Conexao.abrirConexao(); PreparedStatement statement = conexao.prepareStatement(sql))
+		{
 			statement.setInt(1, buscarIdDoClienteJuridicoNaTabelaCliente(clienteJuridico));
-			rs = statement.executeQuery();
-
-			while (rs.next()) {
-				descricao = rs.getString("descricao");
-				data =  ((Timestamp) rs.getObject("data")).toLocalDateTime();
-				Atendimento atendimento = new Atendimento(descricao, data);
-				atendimentos.add(atendimento);
+			
+			try (ResultSet rs = statement.executeQuery())
+			{
+				while (rs.next()) {
+					descricao = rs.getString("descricao");
+					data = ((Timestamp) rs.getObject("data")).toLocalDateTime();
+					Atendimento atendimento = new Atendimento(descricao, data);
+					atendimentos.add(atendimento);
+				}
 			}
-
 		} catch (Exception ex) {
 			Logger.error(ex, "Nao foi possivel montar a lista de atendimentos do cliente juridico.");
-
-		} finally {
-			JDBCUtils.fecharRecursos(conexao, statement);
-		}
+		} 
 
 		return atendimentos;
-
 	}
-
 }

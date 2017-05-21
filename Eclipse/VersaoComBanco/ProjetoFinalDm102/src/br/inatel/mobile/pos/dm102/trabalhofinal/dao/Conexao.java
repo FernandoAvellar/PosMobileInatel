@@ -19,7 +19,7 @@ public class Conexao {
 		try {
 			return DriverManager.getConnection(URL, USUARIO, SENHA);
 		} catch (SQLException ex) {
-			Logger.error(ex, "Falha na conexão com o banco de dados.");
+			Logger.error(ex, "Falha na conexao com o banco de dados.");
 		}
 
 		return null;
