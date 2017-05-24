@@ -165,6 +165,7 @@ namespace ProjetoFinalDm102
                     default:
                         PulaLinha();
                         Console.WriteLine("Opcao invalida, digite novamente!");
+                        Console.ReadLine();
                         ExibeMenuDeCadastroDeAtendimento();
                         opcaoDeEntrada = LeituraDoTeclado();
                         break;
@@ -304,6 +305,7 @@ namespace ProjetoFinalDm102
 
         private static void ImprimeTodosAtendimentosPara(Cliente clienteASerAtendido)
         {
+            Console.Clear();
             PulaLinha();
             if (clienteASerAtendido is ClienteFisico)
             {
