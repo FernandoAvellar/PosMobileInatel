@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS `atendimento` (
   `data` datetime NOT NULL,
   `cliente_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `cliente_id` (`cliente_id`),
-  CONSTRAINT `atendimento_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`)
+  KEY `atendimento_ibfk_1` (`cliente_id`),
+  CONSTRAINT `atendimento_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Exportação de dados foi desmarcado.
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `cliente_fisico` (
   `cliente_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_cliente_fisico_cliente` (`cliente_id`),
-  CONSTRAINT `FK_cliente_fisico_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`)
+  CONSTRAINT `FK_cliente_fisico_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Exportação de dados foi desmarcado.
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `cliente_juridico` (
   `cliente_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_cliente_juridico_cliente` (`cliente_id`),
-  CONSTRAINT `FK_cliente_juridico_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`)
+  CONSTRAINT `FK_cliente_juridico_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Exportação de dados foi desmarcado.
